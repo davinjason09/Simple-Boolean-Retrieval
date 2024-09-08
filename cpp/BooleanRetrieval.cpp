@@ -1,25 +1,8 @@
 #include "BooleanRetrieval.h"
 #include <algorithm>
-#include <chrono>
 #include <iostream>
-#include <random>
 #include <set>
 #include <unordered_map>
-
-std::mt19937
-    rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-std::uniform_int_distribution<> dist(0, 20);
-
-std::vector<int> genRandomVector() {
-  size_t size = (size_t)dist(rng) + 1;
-
-  std::set<int> s;
-  while (s.size() < size) {
-    s.insert(dist(rng));
-  }
-
-  return std::vector<int>(s.begin(), s.end());
-}
 
 Node *BooleanRetrieval::BuildTree(
     std::unordered_map<std::string, std::vector<int>> &docIDs,
