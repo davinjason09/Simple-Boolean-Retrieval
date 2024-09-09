@@ -1,0 +1,6 @@
+# compiled / output files
+*.txt
+*.out
+
+# ipynb checkpoints
+.ipynb_checkpoints
