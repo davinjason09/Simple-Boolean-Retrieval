@@ -67,8 +67,7 @@ void InvertedIndex::ParseContent(const std::string &content, int id) {
     char c = content[i];
 
     if (c == ' ') {
-      if (i + 1 < size &&
-          IsCurrency(content, cleanWord, (content[i - 1] == ' ' ? i - 1 : i))) {
+      if (i + 1 < size && IsCurrency(content, cleanWord, i)) {
         continue;
       } else {
         if (cleanWord.back() == '.' || cleanWord.back() == '-')
