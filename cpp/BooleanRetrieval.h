@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InvertedIndex.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -19,10 +20,10 @@ struct Node {
 
 class BooleanRetrieval {
 public:
-  Node *BuildTree(std::unordered_map<std::string, std::vector<int>> &docIDs,
-                  const std::vector<std::string> &queryArray, bool optimize);
+  Node *BuildTree(const std::vector<std::string> &tokenArray,
+                  InvertedIndex &index, bool optimize);
   void PrintTree(Node *root, const std::string &prefix = "",
-                 bool isLeft = false);
+                 bool isLeft = true);
   std::vector<std::string> ParseQuery(const std::string &query);
   std::vector<int> CalculateTree(Node *root, int docSize);
 
