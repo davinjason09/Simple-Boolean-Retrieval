@@ -120,6 +120,7 @@ void InvertedIndex::ReadCSV(const std::string &filePath,
   int id;
   getline(file, line);
 
+  int total = 1;
   while (getline(file, line)) {
     index = 0;
     ReadID(line);
@@ -132,5 +133,8 @@ void InvertedIndex::ReadCSV(const std::string &filePath,
 
     std::reverse(content.begin(), content.end());
     ParseContent(content, id);
+    total++;
   }
+
+  totalDocuments = total;
 }

@@ -8,6 +8,7 @@ class InvertedIndex {
 public:
   size_t index;
   std::string current;
+  int totalDocuments;
 
   void ReadCSV(const std::string &filePath, const std::string &delimiter);
   void ReadID(const std::string &content);
