@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>
+#include <unordered_set>
 
 Node *BooleanRetrieval::BuildTree(const std::vector<std::string> &tokenArray,
                                   InvertedIndex &index, bool optimize) {
@@ -180,18 +181,9 @@ void BooleanRetrieval::UpdateTree(std::vector<Node *> &operands,
 std::vector<int> BooleanRetrieval::CalculateAND(const std::vector<int> &left,
                                                 const std::vector<int> &right) {
   std::vector<int> result;
-
-  int i = 0, j = 0;
-  while (i < left.size() && j < right.size()) {
-    if (left[i] == right[j]) {
-      result.push_back(left[i]);
-      i++, j++;
-    } else if (left[i] < right[i]) {
-      i++;
-    } else {
-      j++;
-    }
-  }
+  result.reserve(std::min(left.size(), right.size()));
+  std::set_intersection(left.begin(), left.end(), right.begin(), right.end(),
+                        std::back_inserter(result));
 
   return result;
 }
@@ -199,7 +191,7 @@ std::vector<int> BooleanRetrieval::CalculateAND(const std::vector<int> &left,
 std::vector<int> BooleanRetrieval::CalculateNOT(const std::vector<int> &right,
                                                 int docSize) {
   std::vector<int> result;
-  std::set<int> s(right.begin(), right.end());
+  std::unordered_set<int> s(right.begin(), right.end());
 
   for (int i = 0; i < docSize; i++) {
     if (s.find(i) == s.end())
@@ -212,26 +204,9 @@ std::vector<int> BooleanRetrieval::CalculateNOT(const std::vector<int> &right,
 std::vector<int> BooleanRetrieval::CalculateOR(const std::vector<int> &left,
                                                const std::vector<int> &right) {
   std::vector<int> result;
-
-  size_t i = 0, j = 0;
-  while (i < left.size() && j < right.size()) {
-    if (left[i] == right[j]) {
-      result.push_back(left[i]);
-      i++, j++;
-    } else if (left[i] < right[j]) {
-      result.push_back(left[i]);
-      i++;
-    } else {
-      result.push_back(right[j]);
-      j++;
-    }
-  }
-
-  if (i < left.size())
-    result.insert(result.end(), left.begin() + i, left.end());
-
-  if (j < right.size())
-    result.insert(result.end(), right.begin() + j, right.end());
+  result.reserve(left.size() + right.size());
+  set_union(left.begin(), left.end(), right.begin(), right.end(),
+            std::back_inserter(result));
 
   return result;
 }
