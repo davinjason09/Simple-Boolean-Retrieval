@@ -2,18 +2,15 @@
 #include "InvertedIndex.h"
 #include <algorithm>
 #include <iostream>
-#include <set>
 #include <unordered_map>
 
 Node *BooleanRetrieval::BuildTree(const std::vector<std::string> &tokenArray,
                                   InvertedIndex &index, bool optimize) {
   std::string operators;
   std::vector<Node *> operands;
-  int totalDocuments = docIDs.size();
   int totalDocuments = index.totalDocuments;
   std::unordered_map<std::string, std::vector<int>> docIDs = index.GetDocIDs();
 
-  for (std::string token : queryArray) {
   for (std::string token : tokenArray) {
     if (token == "(") {
       operators.push_back('(');
@@ -139,12 +136,11 @@ void BooleanRetrieval::ReorderOperands(std::vector<Node *> &operands,
   int end = operators.size() - 1;
   int length = 1;
 
-  while (operators[end] == op) {
+  while (operators[end] == op && end >= 0) {
     end--;
     length++;
   }
 
-  /*std::cout << length << '\n';*/
   if (length <= 2)
     return;
 
