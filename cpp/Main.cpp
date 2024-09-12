@@ -33,6 +33,11 @@ int main(int argc, char *argv[]) {
   BooleanRetrieval model;
   std::string query;
 
+  std::cout << "Welcome!\n";
+  std::cout << "Possible operators:\n";
+  std::cout << "AND operation: &, AND\n";
+  std::cout << "OR operation: /, |, OR\n";
+  std::cout << "NOT operation: ~, NOT\n";
   std::cout << "Enter query: ";
   getline(std::cin, query);
 
