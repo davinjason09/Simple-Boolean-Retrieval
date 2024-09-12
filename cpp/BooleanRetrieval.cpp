@@ -2,6 +2,7 @@
 #include "InvertedIndex.h"
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -26,14 +27,14 @@ Node *BooleanRetrieval::BuildTree(const std::vector<std::string> &tokenArray,
       }
 
       operators.pop_back();
-    } else if (token == "NOT") {
+    } else if (token == "NOT" || token == "~") {
       operators.push_back('~');
-    } else if (token == "AND") {
+    } else if (token == "AND" || token == "&") {
       while (!operators.empty() && operators.back() == '~')
         UpdateTree(operands, operators, totalDocuments);
 
       operators.push_back('&');
-    } else if (token == "OR") {
+    } else if (token == "OR" || token == "/" || token == "|") {
       while (!operators.empty() && operators.back() == '~')
         UpdateTree(operands, operators, totalDocuments);
 
@@ -59,6 +60,9 @@ Node *BooleanRetrieval::BuildTree(const std::vector<std::string> &tokenArray,
   }
 
   while (!operators.empty()) {
+    if (operators.back() == '(')
+      std::runtime_error("Parentheses is not balanced");
+
     if (optimize) {
       ReorderOperands(operands, operators, '&');
       ReorderOperands(operands, operators, '/');
@@ -66,6 +70,9 @@ Node *BooleanRetrieval::BuildTree(const std::vector<std::string> &tokenArray,
 
     UpdateTree(operands, operators, totalDocuments);
   };
+
+  if (operands.size() != 1)
+    std::runtime_error("Invalid query");
 
   return operands.back();
 }
@@ -93,7 +100,8 @@ BooleanRetrieval::ParseQuery(const std::string &query) {
   std::string token;
 
   for (char c : query) {
-    if (c == '(' || c == ')' || c == ' ') {
+    if (c == '(' || c == ')' || c == ' ' || c == '|' || c == '/' || c == '&' ||
+        c == '~') {
       if (!token.empty()) {
         result.push_back(token);
         token.clear();
